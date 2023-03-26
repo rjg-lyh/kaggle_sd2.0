@@ -27,7 +27,7 @@ def get_argparser():
                         help='the number of my train')
 
     #Dataset Options
-    parser.add_argument('--data_root', type=str, default='/media/rjg/T7 Shield/kaggle/sd2.0/dataset',
+    parser.add_argument('--data_root', type=str, default='/root/autodl-tmp',
                         help='path to Dataset')
     parser.add_argument('--csv_name', type=str, default='diffusiondb_15W_add_embedding_mine.csv',
                         help='path to csv')
@@ -36,21 +36,21 @@ def get_argparser():
                         help='Name of Dataset')
 
     #Model Options
-    parser.add_argument('--model_name', type=str, default='vit_base_patch32_224',
+    parser.add_argument('--model_name', type=str, default='vit_large_patch16_384',choices=['vit_large_patch16_384', 'vit_base_patch32_224'],
                         help='model name')                
     parser.add_argument('--num_classes', type=int, default=384,
                         help='the dimension of embedding vector ')
 
     #Train Options
-    parser.add_argument('--num_epochs', type=int, default=3,
+    parser.add_argument('--num_epochs', type=int, default=4,
                         help='epoch number')
-    parser.add_argument("--batch_size", type=int, default=2,
-                        help='batch size (default: 6)')
-    parser.add_argument("--input_size", type=int, default=224)
+    parser.add_argument("--batch_size", type=int, default=64,
+                        help='batch size')
+    parser.add_argument("--input_size", type=int, default=384)
     parser.add_argument("--random_seed", type=int, default=42,
-                        help="random seed (default: 42)")
+                        help="random seed")
     parser.add_argument("--loss_type", type=str, default='Cosine', choices=['Cosine', 'Hinge'], 
-                        help="loss type (depend on which model chosen)")
+                        help="loss type")
     parser.add_argument('--optimizer', type=str, default='Adam', choices=['SGD', 'Adam'],
                         help='the type of optimizer')
     parser.add_argument('--scheduler', type=str, default='Cosine', choices=['Step', 'Cosine'],
@@ -61,8 +61,8 @@ def get_argparser():
                         help='weight decay (default: 1e-4)')
     parser.add_argument('--step_size', type=int, default=1,
                         help='when to change LR')
-    parser.add_argument('--num_workers', type=int, default=0,
-                        help='number of CPU workers, cat /proc/cpuinfo 查看cpu核心数')
+    parser.add_argument('--num_workers', type=int, default=24,
+                        help='number of CPU workers, cat /proc/cpuinfo| grep "cpu cores"| uniq 查看cpu核心数')
     return parser
 
 
@@ -92,7 +92,7 @@ def get_dataset(opts):
     return trn_dataset, val_dataset 
 
 
-def get_dataloader(trn_dataset, val_dataset):
+def get_dataloader(opts, trn_dataset, val_dataset):
     dataloaders = {}
     dataloaders['train'] = DataLoader(
         dataset=trn_dataset,
@@ -116,7 +116,7 @@ def get_dataloader(trn_dataset, val_dataset):
     )
     len1 = len(dataloaders['train'])
     len2 = len(dataloaders['val'])
-    print(f'train: {len1}  val: {len2}')
+    print(f'dataset: {opts.dataset}  train: {len1}  val: {len2}')
     return dataloaders
 
 
@@ -184,9 +184,10 @@ if __name__ == '__main__':
 
     #Configs
     opts = get_argparser().parse_args()
+    print(f'model: {opts.model_name}  input_size:{opts.input_size}  batchsize:{opts.batch_size}  num_epoch:{opts.num_epochs}')
 
     #Setup log.txt
-    dir_path = '../record/checkpoints_%d'%opts.expnum
+    dir_path = '../record_sd2.0/checkpoints_%d'%opts.expnum
     Path(dir_path).mkdir(parents=True, exist_ok=False)
     logs_filename = dir_path + '/log.txt'
     Path(logs_filename).touch(exist_ok=False)
@@ -199,7 +200,7 @@ if __name__ == '__main__':
 
     ##Setup dataloader
     trn_dataset, val_dataset = get_dataset(opts)
-    dataloaders = get_dataloader(trn_dataset, val_dataset)
+    dataloaders = get_dataloader(opts, trn_dataset, val_dataset)
 
     #Setup model
     model = timm.create_model(
