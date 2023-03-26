@@ -207,6 +207,7 @@ if __name__ == '__main__':
         pretrained=True,
         num_classes=opts.num_classes
     )
+    model.set_grad_checkpointing()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
