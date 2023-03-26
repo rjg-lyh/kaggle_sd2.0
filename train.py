@@ -36,7 +36,7 @@ def get_argparser():
                         help='Name of Dataset')
 
     #Model Options
-    parser.add_argument('--model_name', type=str, default='vit_large_patch16_384',choices=['vit_large_patch16_384', 'vit_base_patch32_224'],
+    parser.add_argument('--model_name', type=str, default='vit_large_patch16_224',choices=['vit_large_patch16_384', 'vit_base_patch32_224'],
                         help='model name')                
     parser.add_argument('--num_classes', type=int, default=384,
                         help='the dimension of embedding vector ')
@@ -46,7 +46,7 @@ def get_argparser():
                         help='epoch number')
     parser.add_argument("--batch_size", type=int, default=64,
                         help='batch size')
-    parser.add_argument("--input_size", type=int, default=384)
+    parser.add_argument("--input_size", type=int, default=224)
     parser.add_argument("--random_seed", type=int, default=42,
                         help="random seed")
     parser.add_argument("--loss_type", type=str, default='Cosine', choices=['Cosine', 'Hinge'], 
@@ -61,7 +61,7 @@ def get_argparser():
                         help='weight decay (default: 1e-4)')
     parser.add_argument('--step_size', type=int, default=1,
                         help='when to change LR')
-    parser.add_argument('--num_workers', type=int, default=24,
+    parser.add_argument('--num_workers', type=int, default=12,
                         help='number of CPU workers, cat /proc/cpuinfo| grep "cpu cores"| uniq 查看cpu核心数')
     return parser
 
@@ -208,6 +208,7 @@ if __name__ == '__main__':
         pretrained=True,
         num_classes=opts.num_classes
     )
+    model.set_grad_checkpointing()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
