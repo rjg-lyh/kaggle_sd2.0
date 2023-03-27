@@ -23,7 +23,7 @@ def get_argparser():
     parser = argparse.ArgumentParser()
     
     #Experiment number
-    parser.add_argument('--expnum',  type=int, default=1,
+    parser.add_argument('-expnum', '--expnum',  type=int, default=3,
                         help='the number of my train')
 
     #Dataset Options
@@ -32,22 +32,23 @@ def get_argparser():
     parser.add_argument('--csv_name', type=str, default='diffusiondb_15W_add_embedding_mine.csv',
                         help='path to csv')
     parser.add_argument('--dataset', type=str, default='dataset_15W',
-                        choices=['dataset_3W', 'dataset_14W', 'dataset_200W'],
+                        choices=['dataset_3W', 'dataset_15W', 'dataset_200W'],
                         help='Name of Dataset')
 
     #Model Options
-    parser.add_argument('--model_name', type=str, default='vit_base_patch32_224',choices=['vit_large_patch16_384', 'vit_base_patch32_224'],
-                        help='model name')                
+    parser.add_argument('-model', '--model_name', type=str, default='vit_large_patch16_224',
+                        choices=['vit_large_patch16_384', 'vit_base_patch32_224','vit_base_patch16_224', 'vit_large_patch16_224'],
+                        help='model name')  
     parser.add_argument('--num_classes', type=int, default=384,
                         help='the dimension of embedding vector ')
 
     #Train Options
-    parser.add_argument('--num_epochs', type=int, default=4,
+    parser.add_argument('-epoch', '--num_epochs', type=int, default=4,
                         help='epoch number')
-    parser.add_argument("--batch_size", type=int, default=64,
+    parser.add_argument('-batch', "--batch_size", type=int, default=64,
                         help='batch size')
-    parser.add_argument("--input_size", type=int, default=224)
-    parser.add_argument("--random_seed", type=int, default=42,
+    parser.add_argument('-input', "--input_size", type=int, default=224)
+    parser.add_argument('-seed', "--random_seed", type=int, default=42,
                         help="random seed")
     parser.add_argument("--loss_type", type=str, default='Cosine', choices=['Cosine', 'Hinge'], 
                         help="loss type")
@@ -230,7 +231,7 @@ if __name__ == '__main__':
     
     best_score = -1.0
     for epoch in range(opts.num_epochs):
-        log_epoch(logs_filename, epoch)
+        log_epoch(logs_filename, epoch+1)
         #train
         loss_trn, cos_trn = train(opts, dataloaders['train'], model, device, optimizer, scheduler)
         print('Epoch {:d} / trn/loss={:.4f}, trn/cos={:.4f}'.format(epoch + 1, loss_trn, cos_trn))

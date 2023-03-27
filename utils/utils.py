@@ -75,4 +75,4 @@ def log_train(logs_filename, loss_trn, cos_trn):
 
 def log_val(logs_filename, loss_val, cos_val):
     with open(logs_filename, 'a') as f:
-        f.writelines('trn/loss={:.4f}, trn/cos={:.4f} \n\n'.format(loss_val, cos_val))
+        f.writelines('val/loss={:.4f}, val/cos={:.4f} \n\n'.format(loss_val, cos_val))
