@@ -36,7 +36,7 @@ def get_argparser():
                         help='Name of Dataset')
 
     #Model Options
-    parser.add_argument('--model_name', type=str, default='vit_large_patch16_224',choices=['vit_large_patch16_384', 'vit_base_patch32_224'],
+    parser.add_argument('--model_name', type=str, default='vit_base_patch32_224',choices=['vit_large_patch16_384', 'vit_base_patch32_224'],
                         help='model name')                
     parser.add_argument('--num_classes', type=int, default=384,
                         help='the dimension of embedding vector ')
@@ -142,7 +142,7 @@ def validate(loader, model, device, optimizer, scheduler):
 
         val_meters['loss'].update(val_loss, n=X.size(0))
         val_meters['cos'].update(val_cos, n=X.size(0))
-    return val_meters['loss'], val_meters['cos']
+    return val_meters['loss'].avg, val_meters['cos'].avg
 
 
 def train(opts, loader, model, device, optimizer, scheduler):
@@ -174,7 +174,7 @@ def train(opts, loader, model, device, optimizer, scheduler):
             train_meters['cos'].update(trn_cos, n=X.size(0))
         if opts.scheduler == 'Step':
             scheduler.step()
-        return train_meters['loss'], train_meters['cos'].avg
+        return train_meters['loss'].avg, train_meters['cos'].avg
 
 
 
