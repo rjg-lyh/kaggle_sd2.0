@@ -229,7 +229,7 @@ if __name__ == '__main__':
     
     best_score = -1.0
     for epoch in range(opts.num_epochs):
-        log_epoch(logs_filename, epoch)
+        log_epoch(logs_filename, epoch+1)
         #train
         loss_trn, cos_trn = train(opts, dataloaders['train'], model, device, optimizer, scheduler)
         print('Epoch {:d} / trn/loss={:.4f}, trn/cos={:.4f}'.format(epoch + 1, loss_trn, cos_trn))
