@@ -56,7 +56,7 @@ def get_argparser():
                         help='the type of optimizer')
     parser.add_argument('--scheduler', type=str, default='Cosine', choices=['Step', 'Cosine'],
                         help='learning rate scheduler policy')
-    parser.add_argument('--init_lr', type=float, default=1e-4,
+    parser.add_argument('-lr', '--init_lr', type=float, default=1e-4,
                         help='init learning rate')
     parser.add_argument("--weight_decay", type=float, default=1e-4,
                         help='weight decay (default: 1e-4)')
