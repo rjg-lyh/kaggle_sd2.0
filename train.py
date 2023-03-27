@@ -131,8 +131,8 @@ def validate(loader, model, device):
 
         with torch.no_grad():
             X_out = model(X)
-            target = torch.ones(X.size(0)).to(device)
-            loss = criterion(X_out, y, target)
+            #target = torch.ones(X.size(0)).to(device)
+            loss = criterion(X_out, y)
 
             val_loss = loss.item()
             val_cos = cosine_similarity(
