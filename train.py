@@ -120,7 +120,7 @@ def get_dataloader(opts, trn_dataset, val_dataset):
     return dataloaders
 
 
-def validate(loader, model, device, optimizer, scheduler):
+def validate(loader, model, device):
     val_meters = {
             'loss': AverageMeter(),
             'cos': AverageMeter(),
@@ -236,7 +236,7 @@ if __name__ == '__main__':
         print('Epoch {:d} / trn/loss={:.4f}, trn/cos={:.4f}'.format(epoch + 1, loss_trn, cos_trn))
         log_train(logs_filename, loss_trn, cos_trn)
         #val
-        loss_val, cos_val = validate(opts, dataloaders['val'], model, device, optimizer, scheduler)
+        loss_val, cos_val = validate(dataloaders['val'], model, device)
         print('Epoch {:d} / val/loss={:.4f}, val/cos={:.4f}'.format(epoch + 1, loss_val, cos_val))
         log_val(logs_filename, loss_val, cos_val)
         #Save best_model
